@@ -1,5 +1,6 @@
 package clinic.ease.api.infra.exception;
 
+import clinic.ease.api.domain.ValidacaoException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,6 +55,11 @@ public class TratadorDeErros {
     public ResponseEntity tratarErroAcessoNegado() {
         logErrorHelper.error("Authentication", "Acesso negado", "null");
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado");
+    }
+
+    @ExceptionHandler(ValidacaoException.class)
+    public ResponseEntity tratarErroRegraDeNegocio(ValidacaoException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
     private record DadosErroValidacao(String campo, String mensagem) {
